@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_cauclub/login.dart';
+import 'package:frontend_cauclub/context.dart';
 
 void main() => runApp(MyApp());
 
@@ -6,24 +8,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Flutter 튜토리얼",
-        home: Scaffold(
-            body: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.zero,
-                child: Column(
-                    children: [imageSection, titleSection],
-                    mainAxisAlignment: MainAxisAlignment.center))));
+      title: '활동 인증서 발급 - 중앙대학교 서울캠퍼스 동아리연합회',
+      theme: ThemeData.dark(),
+      home: HomePage(),
+    );
   }
+}
 
-  Widget titleSection = Container(
-      padding: const EdgeInsets.all(32),
-      child: Text("중앙대학교 서울캠퍼스 동아리연합회\n회원 인증서 발급 서비스",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-          textAlign: TextAlign.center));
+// 메인 페이지: 3:7의 비율로 두 영역으로 나눔
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // MediaQueryData deviceData = MediaQuery.of(context);
+    // Size screenSize = deviceData.size;
+    final Size screenSize = MediaQuery.of(context).size;
 
-  Widget imageSection = Container(
-      padding: const EdgeInsets.all(32),
-      child: SizedBox(
-          height: 200, width: 200, child: Image.asset('resources/logo.png')));
+    return Scaffold(
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                width: screenSize.width * 0.3,
+                height: screenSize.height,
+                color: Color(0xFF292929),
+                child: LoginPage()),
+            Container(
+                width: screenSize.width * 0.7,
+                height: screenSize.height,
+                color: Color(0xFFFFB102),
+                child: ContextPage())
+          ],
+        ),
+      ),
+    );
+  }
 }
