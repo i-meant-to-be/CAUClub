@@ -1,25 +1,46 @@
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework import permissions
+from rest_framework import viewsets
+from django.core.mail import EmailMessage
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .serializers import *
 from .models import *
 import random
 
-# Create your views here.
-@api_view(['GET'])
-def getUser(request, targetUserName):
-    targetUserData = User.objects.filter(name = targetUserName)
-    serializer = UserSerializer(targetUserData)
-    return Response(serializer.data)
+class MasterViewSet(viewsets.ViewSet):
+    # TODO
+    pass
 
-@api_view(['GET'])
-def getUserHistories(request, targetUserName):
-    targetUserId = User.objects.filter(name = targetUserName).first.value_from_object()
-    targetHistoriesData = History.objects.filter(userId = targetUserId)
-    serializer = HistorySerializer(targetHistoriesData)
-    return Response(serializer.data)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
 
-@api_view(['GET'])
-def getClub(request, targetClubName):
-    targetClubData = Club.objects.filter()
+    # 모든 사용자 반환
+    def list(self, request):
+        serializer = UserSerializer(self.queryset, many = True)
+        return Response(serializer.data)
+    
+    # id = pk인 사용자 반환
+    def get(self, request, pk = None):
+        user = get_object_or_404(self.queryset, id = pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class HistoryViewSet(viewsets.ModelViewSet):
+    queryset = History.objects.all()
+
+    # id = pk인 사용자의 모든 활동 이력 반환
+    def get(self, request, pk = None):
+        histories = History.objects.filter(userId = pk)
+        serializer = HistorySerializer(histories, many = True)
+        return Response(serializer.data)
+
+class ClubViewSet(viewsets.ModelViewSet):
+    queryset = Club.objects.all()
+
+    # name = pk인 동아리 반환
+    def get(self, request, pk = None):
+        club = get_object_or_404(self.queryset, name = pk)
+        serializer = ClubSerializer(club)
+        return Response(serializer.data)
