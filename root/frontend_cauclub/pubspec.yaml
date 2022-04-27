@@ -85,6 +85,19 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+  fonts:
+    - family: Noto Sans KR
+      fonts:
+        - asset: resources/fonts/NotoSansKR-Black.otf
+          weight: 900
+        - asset: resources/fonts/NotoSansKR-Bold.otf
+          weight: 700
+        - asset: resources/fonts/NotoSansKR-Light.otf
+          weight: 300
+        - asset: resources/fonts/NotoSansKR-Thin.otf
+          weight: 100
+        - asset: resources/fonts/NotoSansKR-Regular.otf
+
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
