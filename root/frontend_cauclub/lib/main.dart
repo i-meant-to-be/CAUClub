@@ -5,7 +5,8 @@ void main() {
   runApp(MaterialApp(
       title: "동아리 활동 인증서 발급 - 중앙대학교 서울캠퍼스 동아리연합회",
       home: MainPage(),
-      theme: ThemeData(fontFamily: 'Noto Sans KR')));
+      theme: ThemeData(fontFamily: 'CookieRun'),
+      debugShowCheckedModeBanner: false));
 }
 
 class MainPage extends StatefulWidget {
@@ -14,6 +15,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  _nextPage(BuildContext context) => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => DataPage()));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,17 +34,16 @@ class _MainPageState extends State<MainPage> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset("resources/logo.png", width: 120),
-                        SizedBox(height: 50),
+                        Image.asset("assets/images/logo.png", width: 120),
+                        SizedBox(height: 30),
                         const Text("활동 인증서",
                             style: TextStyle(
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 30,
                                 color: MaterialYouColor.primary,
                                 height: 1.2)),
                         const Text("발급 서비스",
                             style: TextStyle(
-                                fontWeight: FontWeight.w100,
                                 fontSize: 30,
                                 color: MaterialYouColor.onBackground,
                                 height: 1.2)),
@@ -52,6 +55,7 @@ class _MainPageState extends State<MainPage> {
                         ElevatedButton(
                             onPressed: () {
                               print("버튼 클릭됨");
+                              _nextPage(context);
                             },
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
@@ -79,5 +83,22 @@ class _MainPageState extends State<MainPage> {
                                 )))
                       ])),
             )));
+  }
+}
+
+class DataPage extends StatefulWidget {
+  @override
+  _DataPageState createState() => _DataPageState();
+}
+
+class _DataPageState extends State<DataPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+            color: MaterialYouColor.background,
+            alignment: Alignment.center,
+            child:
+                const Text("Test", style: TextStyle(color: Colors.white70))));
   }
 }
