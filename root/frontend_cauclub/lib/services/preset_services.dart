@@ -1,12 +1,5 @@
+import "package:frontend_cauclub/ui_services.dart";
 import "package:flutter/material.dart";
-
-class MaterialYouColor {
-  static const Color onBackground = Color(0xffeae1d9);
-  static const Color background = Color(0xff1f1b16);
-  static const Color surfaceVarient = Color(0xff4e4538);
-  static const Color primary = Color(0xffffba3b);
-  static const Color onPrimary = Color(0xff442c00);
-}
 
 class LoginPageTextField extends StatelessWidget {
   String hintText;
@@ -47,4 +40,16 @@ InputDecoration getLoginTextFieldDecoration(String hintText) {
           borderSide: BorderSide(color: Color(0xffffba3b), width: 3)),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
       hintText: hintText);
+}
+
+void getLoginPageSnackBar(String text, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text,
+          style: TextStyle(
+              color: MaterialYouLight.onPrimary, fontFamily: "CookieRun")),
+      backgroundColor: MaterialYouLight.primary,
+      behavior: SnackBarBehavior.floating,
+      width: 400,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      duration: Duration(seconds: 1)));
 }
