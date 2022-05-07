@@ -31,15 +31,13 @@ class APIService {
     }
   }
 
-  Future<List<String>> getJoinedClubs(int userId) async {
+  Future<String> getJoinedClubs(int userId) async {
     try {
       var response = await http
           .get(Uri.parse(baseUrl + userId.toString() + "/getJoinedClubs"));
       if (response.statusCode == 200) {
-        String rawData = utf8.decode(response.bodyBytes);
-        rawData = rawData.replaceAll("'", "").replaceAll('"', "");
-        print("동아리 데이터 전송 완료");
-        return rawData.split(", ");
+        print(utf8.decode(response.bodyBytes));
+        return utf8.decode(response.bodyBytes);
       } else {
         return Future.error("API 호출 실패");
       }

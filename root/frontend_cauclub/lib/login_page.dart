@@ -5,13 +5,10 @@ import "package:frontend_cauclub/data_page.dart";
 import "package:flutter/material.dart";
 
 class LoginPage extends StatelessWidget {
-  APIService apiService = APIService();
+  APIService _apiService = APIService();
   final _formKey = GlobalKey<FormState>();
   late int _userId;
   late String _userName;
-
-  _nextPage(BuildContext context) => Navigator.push(
-      context, MaterialPageRoute(builder: (context) => DataPage()));
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,6 @@ class LoginPage extends StatelessWidget {
                               offset: Offset(0, 3))
                         ],
                         borderRadius: BorderRadius.circular(30),
-                        //border: Border.all(width: 2, color: Color(0xFFFFB10A))
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -69,10 +65,10 @@ class LoginPage extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: <Widget>[
-                                          //LoginPageTextField("학번"),
                                           TextFormField(
                                               style: TextStyle(
                                                   color: Color(0xFF332D24)),
+                                              initialValue: "20185456",
                                               decoration:
                                                   getLoginTextFieldDecoration(
                                                       "학번"),
@@ -95,6 +91,7 @@ class LoginPage extends StatelessWidget {
                                           TextFormField(
                                               style: TextStyle(
                                                   color: Color(0xFF332D24)),
+                                              initialValue: "강시운",
                                               decoration:
                                                   getLoginTextFieldDecoration(
                                                       "이름"),
@@ -107,22 +104,28 @@ class LoginPage extends StatelessWidget {
                                               onSaved: (val) {
                                                 _userName = val ?? "";
                                               }),
-                                          //LoginPageTextField("이름"),
                                         ]))),
                             SizedBox(height: 30),
                             ElevatedButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
-                                    Future<int> validationCode = apiService
+                                    Future<int> validationCode = _apiService
                                         .validateUser(_userId, _userName);
                                     try {
                                       validationCode.then((val) {
                                         if (val == 0) {
-                                          Navigator.pushNamed(context, "/main",
-                                              arguments: DataPageArguments(
-                                                  name: _userName,
-                                                  id: _userId));
+                                          Future<String> clubString =
+                                              _apiService
+                                                  .getJoinedClubs(_userId);
+                                          clubString.then((val) {
+                                            Navigator.pushNamed(
+                                                context, "/main",
+                                                arguments: DataPageArguments(
+                                                    name: _userName,
+                                                    id: _userId,
+                                                    clubs: val));
+                                          });
                                         } else if (val == 4) {
                                           getLoginPageSnackBar(
                                               "등록되지 않은 학번과 이름입니다.\n동아리연합회에 문의해주세요.",
