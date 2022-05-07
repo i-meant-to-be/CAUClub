@@ -36,7 +36,7 @@ class MaterialColorScheme {
     surface: Color(0xFFFCFCFC),
     onSurface: Color(0xFF1F1B16),
     surfaceVariant: Color(0xFFEFE0CF),
-    onSurfaceVariant: Color(0xFF4E4538),
+    onSurfaceVariant: Color(0xFF332D24),
     outline: Color(0xFF807567),
     onInverseSurface: Color(0xFFF8EFE7),
     inverseSurface: Color(0xFF34302A),
@@ -76,16 +76,16 @@ class MaterialColorScheme {
   );
 }
 
-ThemeData MaterialLightTheme() {
+ThemeData getMaterialLightTheme() {
   return ThemeData(
       brightness: Brightness.light,
       colorScheme: MaterialColorScheme.lightColorScheme,
-      fontFamily: "CookieRun");
+      fontFamily: "Noto Sans");
 }
 
-ThemeData MaterialDarkTheme() {
+ThemeData getMaterialDarkTheme() {
   return ThemeData(
       brightness: Brightness.dark,
       colorScheme: MaterialColorScheme.darkColorScheme,
-      fontFamily: "CookieRun");
+      fontFamily: "Noto Sans");
 }

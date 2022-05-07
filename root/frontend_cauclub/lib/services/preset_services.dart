@@ -1,4 +1,4 @@
-import "package:frontend_cauclub/ui_services.dart";
+import "package:frontend_cauclub/services/ui_services.dart";
 import "package:flutter/material.dart";
 
 class LoginPageTextField extends StatelessWidget {
@@ -31,23 +31,26 @@ class LoginPageTextField extends StatelessWidget {
 InputDecoration getLoginTextFieldDecoration(String hintText) {
   return InputDecoration(
       filled: true,
-      fillColor: Color(0xffeae1d9),
+      // fillColor: Color(0xffeae1d9),
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xffddc3a1), width: 3)),
+          borderSide: BorderSide(color: Color(0xFF332D24), width: 1)),
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xffffba3b), width: 3)),
+          borderSide: BorderSide(color: Color(0xFFFFB10A), width: 2)),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      hintText: hintText);
+      hintText: hintText,
+      hintStyle: TextStyle(color: Color(0x881F1B16)));
 }
 
 void getLoginPageSnackBar(String text, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(text,
           style: TextStyle(
-              color: MaterialYouLight.onPrimary, fontFamily: "CookieRun")),
-      backgroundColor: MaterialYouLight.primary,
+              color: Color(0xFF332D24),
+              fontFamily: "Noto Sans",
+              fontWeight: FontWeight.bold)),
+      backgroundColor: Color(0xFFFFB10A),
       behavior: SnackBarBehavior.floating,
       width: 400,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
