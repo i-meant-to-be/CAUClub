@@ -54,5 +54,5 @@ void getLoginPageSnackBar(String text, BuildContext context) {
       behavior: SnackBarBehavior.floating,
       width: 400,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      duration: Duration(seconds: 1)));
+      duration: Duration(seconds: 2)));
 }

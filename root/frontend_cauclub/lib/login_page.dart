@@ -110,9 +110,9 @@ class LoginPage extends StatelessWidget {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
-                                    Future<int> validationCode = _apiService
-                                        .validateUser(_userId, _userName);
                                     try {
+                                      Future<int> validationCode = _apiService
+                                          .validateUser(_userId, _userName);
                                       validationCode.then((val) {
                                         if (val == 0) {
                                           Future<String> clubString =
@@ -134,6 +134,10 @@ class LoginPage extends StatelessWidget {
                                           getLoginPageSnackBar(
                                               "학번과 이름을 다시 확인해주세요.", context);
                                         }
+                                      }).catchError((error) {
+                                        getLoginPageSnackBar(
+                                            "서버 연결에 실패했습니다.\n잠시 후에 다시 시도해주세요.",
+                                            context);
                                       });
                                     } catch (e) {
                                       getLoginPageSnackBar(

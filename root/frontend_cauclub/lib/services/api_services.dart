@@ -27,6 +27,7 @@ class APIService {
         return Future.error("API 호출 실패");
       }
     } catch (e) {
+      print("Error <$e> has been returned.");
       return Future.error(e);
     }
   }
