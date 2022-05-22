@@ -27,7 +27,7 @@ class APIService {
         return Future.error("API 호출 실패");
       }
     } catch (e) {
-      print("Error <$e> has been returned.");
+      // print("Error <$e> has been returned.");
       return Future.error(e);
     }
   }
@@ -37,7 +37,7 @@ class APIService {
       var response = await http
           .get(Uri.parse(baseUrl + userId.toString() + "/getJoinedClubs"));
       if (response.statusCode == 200) {
-        print(utf8.decode(response.bodyBytes));
+        // print(utf8.decode(response.bodyBytes));
         return utf8.decode(response.bodyBytes);
       } else {
         return Future.error("API 호출 실패");

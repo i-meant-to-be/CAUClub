@@ -4,11 +4,17 @@ import "package:frontend_cauclub/services/api_services.dart";
 import "package:frontend_cauclub/data_page.dart";
 import "package:flutter/material.dart";
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   APIService _apiService = APIService();
   final _formKey = GlobalKey<FormState>();
   late int _userId;
   late String _userName;
+  String _selectedClubName = "라켓단";
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +110,71 @@ class LoginPage extends StatelessWidget {
                                               onSaved: (val) {
                                                 _userName = val ?? "";
                                               }),
+                                          SizedBox(height: 10),
+                                          DecoratedBox(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Color(0xFF332D24)),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                color: Color(0xffe6d7c7)),
+                                            child: Container(
+                                                height: 50,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(width: 25),
+                                                    Container(
+                                                        width: 250,
+                                                        child: DropdownButton(
+                                                            isExpanded: true,
+                                                            icon: Icon(Icons.arrow_downward_sharp,
+                                                                color: Color(
+                                                                    0xFF34302A)),
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xFF34302A),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontFamily:
+                                                                    "Noto Sans"),
+                                                            dropdownColor:
+                                                                Color(
+                                                                    0xFFEFE0CF),
+                                                            focusColor: Color(
+                                                                0x00000000),
+                                                            underline:
+                                                                Container(),
+                                                            value:
+                                                                _selectedClubName,
+                                                            items: allClubsList
+                                                                .keys
+                                                                .map<
+                                                                    DropdownMenuItem<
+                                                                        String>>((String
+                                                                    val) {
+                                                              return DropdownMenuItem<
+                                                                      String>(
+                                                                  child:
+                                                                      Text(val),
+                                                                  value: val);
+                                                            }).toList(),
+                                                            onChanged: (String?
+                                                                newVal) {
+                                                              setState(() {
+                                                                _selectedClubName =
+                                                                    newVal!;
+                                                              });
+                                                            })),
+                                                    SizedBox(width: 25)
+                                                  ],
+                                                )),
+                                          )
                                         ]))),
                             SizedBox(height: 30),
                             ElevatedButton(
@@ -121,7 +192,7 @@ class LoginPage extends StatelessWidget {
                                           clubString.then((val) {
                                             Navigator.pushNamed(
                                                 context, "/main",
-                                                arguments: DataPageArguments(
+                                                arguments: AppArguments(
                                                     name: _userName,
                                                     id: _userId,
                                                     clubs: val));
@@ -161,10 +232,10 @@ class LoginPage extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const <Widget>[
-                                        Icon(Icons.check_outlined,
-                                            color: MaterialYouLight.onPrimary),
+                                        Icon(Icons.login_sharp,
+                                            color: Color(0xFF442c00)),
                                         SizedBox(width: 10),
-                                        Text("활동 기록 확인",
+                                        Text("로그인",
                                             style: TextStyle(
                                                 color: Color(0xFF332D24),
                                                 fontSize: 15,

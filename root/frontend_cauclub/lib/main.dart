@@ -1,28 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_cauclub/services/ui_services.dart';
-import 'package:frontend_cauclub/login_page.dart';
-import 'package:frontend_cauclub/data_page.dart';
+import 'package:frontend_cauclub/login_widget.dart';
+import 'package:frontend_cauclub/view_widget.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(
-      title: "동아리 활동 인증서 발급 - 중앙대학교 서울캠퍼스 동아리연합회",
-      theme: getMaterialLightTheme(),
-      darkTheme: getMaterialDarkTheme(),
-      debugShowCheckedModeBanner: false,
-      initialRoute: "/",
-      // onGenerateRoute: (settings) {
-      //   switch (settings.name) {
-      //     case "login":
-      //       return MaterialPageRoute(builder: (context) => LoginPage());
-      //     case "main":
-      //       var _dataPageArguments = settings.arguments as DataPageArguments;
-      //       return MaterialPageRoute(
-      //           builder: (context) => DataPage(arguments: _dataPageArguments));
-      //   }
-      // }
-      routes: <String, WidgetBuilder>{
-        "/": (context) => LoginPage(),
-        "/main": (context) => DataPage()
-      }));
+int widgetReplaceCounter = 0;
+void main() => runApp(MainApp());
+
+class MainApp extends StatefulWidget {
+  @override
+  _MainAppState createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  List<Widget> _allWidgetsList = [LoginWidget(), ViewWidget()];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "활동 인증서 발급 - 중앙대학교 서울캠퍼스 동아리연합회",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(fontFamily: "Noto Sans"),
+        home: Scaffold(
+            body: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: const [Color(0xFFE88802), Color(0XFFE8B602)])),
+                alignment: Alignment.center,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 70),
+                      SizedBox(
+                          width: 428,
+                          height: 640,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFFEFE0CF),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Color(0x22000000),
+                                      spreadRadius: 1,
+                                      blurRadius: 15,
+                                      offset: Offset(0, 3))
+                                ],
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(child: LoginWidget()))),
+                      Container(
+                          height: 70,
+                          alignment: Alignment.center,
+                          child: const Text(
+                              "Copyright 2022. 중앙대학교 서울캠퍼스 동아리연합회 & Shawn Kang. 모든 권리 보유.",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: -0.3,
+                                  color: Color(0xFFEFE0CF))))
+                    ]))));
+  }
 }

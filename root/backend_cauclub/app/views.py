@@ -56,7 +56,10 @@ class HistoryViewSet(viewsets.ModelViewSet):
         histories = History.objects.filter(userId = pk).values_list("clubName", flat = True)
         return Response(str(list(histories))[1:-1])
     def getHistories(self, request, pk = None):
-        return Response(status = 200)
+        userId, clubName = str(pk).split("_")
+        histories = History.objects.filter(userId = userId, clubName = clubName)
+        serializer = HistorySerializer(histories, many = True)
+        return Response(serializer.data)
 
 class ClubViewSet(viewsets.ModelViewSet):
     queryset = Club.objects.all()
