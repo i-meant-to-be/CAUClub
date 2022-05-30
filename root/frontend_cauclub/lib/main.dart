@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_cauclub/library/ui.dart' as fe_ui;
 import 'package:frontend_cauclub/login_widget.dart';
-import 'package:frontend_cauclub/view_widget.dart';
+import 'package:frontend_cauclub/review_widget.dart';
+import 'package:frontend_cauclub/end_widget.dart';
 
-int widgetReplaceCounter = 0;
 void main() => runApp(MainApp());
+
+int _widgetReplaceCounter = 0;
+
+class MainAppArguments {
+  static String name = "";
+  static String clubName = "";
+  static int id = 0;
+}
 
 class MainApp extends StatefulWidget {
   @override
-  _MainAppState createState() => _MainAppState();
+  MainAppState createState() => MainAppState();
+
+  static MainAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<MainAppState>();
 }
 
-class _MainAppState extends State<MainApp> {
-  List<Widget> _allWidgetsList = [LoginWidget(), ViewWidget()];
+class MainAppState extends State<MainApp> {
+  List<Widget> _allWidgetsList = [LoginWidget(), ReviewWidget(), EndWidget()];
+
+  void setWidgetReplaceCounter() => setState(() {
+        if (_widgetReplaceCounter < 2) {
+          _widgetReplaceCounter++;
+        } else {
+          _widgetReplaceCounter = 0;
+        }
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +55,7 @@ class _MainAppState extends State<MainApp> {
                           width: 428,
                           height: 640,
                           child: Container(
+                              padding: EdgeInsets.all(30),
                               decoration: BoxDecoration(
                                 color: Color(0xFFEFE0CF),
                                 boxShadow: const [
@@ -46,7 +67,9 @@ class _MainAppState extends State<MainApp> {
                                 ],
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Center(child: LoginWidget()))),
+                              child: Center(
+                                  child:
+                                      _allWidgetsList[_widgetReplaceCounter]))),
                       Container(
                           height: 70,
                           alignment: Alignment.center,
@@ -58,4 +81,29 @@ class _MainAppState extends State<MainApp> {
                                   color: Color(0xFFEFE0CF))))
                     ]))));
   }
+}
+
+@override
+Widget build(BuildContext context) {
+  return ElevatedButton(
+      child: Container(
+          width: 140,
+          height: 40,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                fe_ui.buttonIconList[0],
+                SizedBox(width: 10),
+                Text("활동 이력 확인", style: fe_ui.screenButtonTextStyle)
+              ])),
+      style: fe_ui.screenButtonStyle,
+      onPressed: () {
+        MainApp.of(context)!.setWidgetReplaceCounter();
+        print("# Button clicked.");
+        print(MainAppArguments.clubName +
+            " / " +
+            MainAppArguments.name +
+            " / " +
+            MainAppArguments.id.toString());
+      });
 }
