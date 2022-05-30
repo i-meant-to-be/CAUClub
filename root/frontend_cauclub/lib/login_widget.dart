@@ -121,8 +121,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                   height: 40,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        fe_ui.buttonIconList[0],
+                      children: const <Widget>[
+                        Icon(Icons.login_sharp, color: Color(0xFF442C00)),
                         SizedBox(width: 10),
                         Text("활동 이력 확인", style: fe_ui.screenButtonTextStyle)
                       ])),

@@ -32,16 +32,45 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           SizedBox(height: 30),
           Expanded(
               child: Scrollbar(
-                  child: ListView.builder(
+                  child: ListView.separated(
+                      physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.vertical,
-                      padding: const EdgeInsets.all(5),
+                      separatorBuilder: (context, index) => Divider(),
                       itemCount: entries.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
                             height: 50,
-                            child: Text('Entry: ${entries[index]}',
-                                style: fe_ui.commentTextStyle));
-                      })))
+                            child: Container(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("2022년 1학기",
+                                    style: TextStyle(fontSize: 18, height: 1)),
+                                Text("회장",
+                                    style: TextStyle(fontSize: 15, height: 1))
+                              ],
+                            )));
+                      }))),
+          SizedBox(height: 30),
+          Center(
+              child: ElevatedButton(
+                  child: Container(
+                      width: 140,
+                      height: 40,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const <Widget>[
+                            Icon(Icons.local_print_shop_sharp,
+                                color: Color(0xFF442C00)),
+                            SizedBox(width: 10),
+                            Text("활동 인증서 발급",
+                                style: fe_ui.screenButtonTextStyle)
+                          ])),
+                  style: fe_ui.screenButtonStyle,
+                  onPressed: () {
+                    MainApp.of(context)!.setWidgetReplaceCounter();
+                  }))
         ]);
   }
 }
