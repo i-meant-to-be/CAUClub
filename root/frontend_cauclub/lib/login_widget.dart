@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_cauclub/library/ui.dart' as fe_ui;
 import 'package:frontend_cauclub/library/data.dart' as fe_data;
+import 'package:frontend_cauclub/library/api.dart' as fe_api;
 import 'package:frontend_cauclub/main.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -10,6 +11,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   final _formKey = GlobalKey<FormState>();
+  fe_api.APIService apiService = fe_api.APIService();
 
   String _selectedClubName = "라켓단";
 
@@ -130,8 +132,35 @@ class _LoginWidgetState extends State<LoginWidget> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  MainApp.of(context)!.setWidgetReplaceCounter();
-                  print(MainAppArguments.clubName);
+                  Future<int> validationCode = apiService.validateUser(
+                      MainAppArguments.id, MainAppArguments.name);
+                  validationCode.then((val) {
+                    try {
+                      if (val == 0) {
+                        Future<String> historiesData =
+                            apiService.isHistoryExists(
+                                MainAppArguments.id, MainAppArguments.clubName);
+                        historiesData.then((val) {
+                          if (val.length <= 2) {
+                            fe_ui.getLoginPageSnackBar(
+                                MainAppArguments.name +
+                                    " 학우님의 " +
+                                    MainAppArguments.clubName +
+                                    "에서의 활동 이력을 찾을 수 없습니다.\n동아리연합회에 문의해주세요.",
+                                context);
+                          } else {
+                            MainApp.of(context)!.setWidgetReplaceCounter();
+                          }
+                        });
+                      } else if (val == 4) {
+                        fe_ui.getLoginPageSnackBar(
+                            "등록되지 않은 학번과 이름입니다.\n동아리연합회에 문의해주세요.", context);
+                      } else {
+                        fe_ui.getLoginPageSnackBar(
+                            "학번과 이름을 다시 확인해주세요.", context);
+                      }
+                    } catch (e) {}
+                  });
                 }
               })
         ]);

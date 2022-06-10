@@ -15,6 +15,10 @@ class MasterViewSet(viewsets.ViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
+    # 이 사용자가 DB에 존재함?
+    def isExist(self, request):
+        user
+
     # 모든 사용자 반환
     def list(self, request):
         serializer = UserSerializer(self.queryset, many = True)
@@ -55,6 +59,7 @@ class HistoryViewSet(viewsets.ModelViewSet):
     def getJoinedClubs(self, request, pk = None):
         histories = History.objects.filter(userId = pk).values_list("clubName", flat = True)
         return Response(str(list(histories))[1:-1])
+
     def getHistories(self, request, pk = None):
         userId, clubName = str(pk).split("_")
         histories = History.objects.filter(userId = userId, clubName = clubName)

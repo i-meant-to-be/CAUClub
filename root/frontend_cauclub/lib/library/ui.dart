@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-final List<Icon> buttonIconList = [
-  Icon(Icons.login_sharp, color: Color(0xFF442C00)),
-  Icon(Icons.find_in_page_sharp, color: Color(0xFF442C00)),
-  Icon(Icons.save_sharp, color: Color(0xFF442C00)),
-  Icon(Icons.refresh_sharp, color: Color(0xFF442C00))
-];
-
 const TextStyle highlightedTextStyle = TextStyle(
     fontSize: 35,
     height: 1.2,
@@ -63,4 +56,18 @@ InputDecoration getLoginTextFieldDecoration(String hintText) {
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
       hintText: hintText,
       hintStyle: TextStyle(color: Color(0x881F1B16)));
+}
+
+void getLoginPageSnackBar(String text, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text,
+          style: TextStyle(
+              color: Color(0xFF332D24),
+              fontFamily: "Noto Sans",
+              fontWeight: FontWeight.bold)),
+      backgroundColor: Color(0xFFFFB10A),
+      behavior: SnackBarBehavior.floating,
+      width: 400,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      duration: Duration(seconds: 2)));
 }

@@ -82,28 +82,3 @@ class MainAppState extends State<MainApp> {
                     ]))));
   }
 }
-
-@override
-Widget build(BuildContext context) {
-  return ElevatedButton(
-      child: Container(
-          width: 140,
-          height: 40,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                fe_ui.buttonIconList[0],
-                SizedBox(width: 10),
-                Text("활동 이력 확인", style: fe_ui.screenButtonTextStyle)
-              ])),
-      style: fe_ui.screenButtonStyle,
-      onPressed: () {
-        MainApp.of(context)!.setWidgetReplaceCounter();
-        print("# Button clicked.");
-        print(MainAppArguments.clubName +
-            " / " +
-            MainAppArguments.name +
-            " / " +
-            MainAppArguments.id.toString());
-      });
-}
