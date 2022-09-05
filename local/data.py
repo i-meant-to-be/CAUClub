@@ -4,15 +4,17 @@ from docx2pdf import convert
 import openpyxl
 import docx
 import datetime
+import re
 
 # 각기 다른 생일 텍스트의 패턴을 통일하는 함수
 # 입력: 임의의 생일 텍스트
 # 출력: 패턴이 통일된 생일 텍스트
 def bDayStrStrip(input: str):
-    # 생일 내 '.'를 전부 '-'으로 변경
-    input = input.replace(".", "-")
+    re1 = re.compile("\d{8}")
+
     # 생일 텍스트 끝에 '-'가 있을 경우 이거 제거
     if input[-1] == "-": input = input[:-1]
+    input = input.strip()
 
     # 1. 생일이 403 (000403), 1103 (001103), 10403 (010403)
     if 3 <= len(input) <= 5:
@@ -23,19 +25,17 @@ def bDayStrStrip(input: str):
         year, month, day = input[0:2], input[2:4], input[4:]
         if 50 < int(year) <= 99: year = "19" + year
         else: year = "20" + year
-    # 3. 생일이 99-08-13
-    elif input[2] == "-" and len(input) == 8:
-        year, month, day = input.split("-")
-        if 50 < int(year) <= 99: year = "19" + year
-        else: year = "20" + year
     # 4. 생일이 19990813
-    elif len(input) == 8:
+    elif len(input) == 8 and input.count("-") == 0:
         year, month, day = input[0:4], input[4:6], input[6:]
-    # 5. 생일이 1999-08-13
-    elif len(input) == 10:
+    # 5. 생일에 대시 두 개 들어감
+    elif input.count("-") == 2:
         year, month, day = input.split("-")
+        if int(year) < 100:
+            if 50 < int(year) <= 99: year = "19" + year
+            else: year = "20" + year
     else:
-        raise Exception
+        return False
     return f"{year}년 {int(month)}월 {int(day)}일"
 
 # 사용자가 DB에 존재하는지 확인하는 함수
@@ -45,10 +45,10 @@ def isUserInDatabase(wb, userName, userId) -> int:
     nameCounter = False
     idCounter = False
     for worksheet in wb.worksheets:
-        for i in range(1, worksheet.max_row + 1):
-            if worksheet["C" + str(i)].value == userName and str(worksheet["D" + str(i)].value) == str(userId): return 0
+        for i in range(2, worksheet.max_row + 1):
+            if worksheet["C" + str(i)].value == userName and worksheet["D" + str(i)].value == userId: return 0
             elif worksheet["C" + str(i)].value == userName: nameCounter = True
-            elif str(worksheet["D" + str(i)].value) == str(userId): idCounter = True
+            elif worksheet["D" + str(i)].value == userId: idCounter = True
     if nameCounter or idCounter: return 1
     else: return 2
 
@@ -62,17 +62,14 @@ def isUserInDatabase(wb, userName, userId) -> int:
 #   [3]: 학과/부
 #   [4]: 생일
 #   [5]: 매체
-def getUserData(wb, userData) -> list:
-    try:
-        for worksheet in wb.worksheets:
-                for i in range(2, worksheet.max_row + 1):
-                    if worksheet["C" + str(i)].value == userData[1] and str(worksheet["D" + str(i)].value) == str(userData[0]):
-                        userData.append(worksheet["E" + str(i)].value)
-                        userData.append(bDayStrStrip(str(worksheet["H" + str(i)].value).replace(" ", "")))
-                        userData.append("자유 토론")
-                        return userData
-    except:
-        return None           
+def getUserData(wb, userData, clubs) -> list:
+    for worksheet in wb.worksheets:
+            for i in range(2, worksheet.max_row + 1):
+                if worksheet["C" + str(i)].value == userData[1] and worksheet["D" + str(i)].value == userData[0]:
+                    userData.append(worksheet["E" + str(i)].value)
+                    userData.append(bDayStrStrip(str(worksheet["H" + str(i)].value).replace(" ", "")))
+                    userData.append(clubs[userData[2]])
+                    return userData   
 
 # 사용자의 활동 이력을 반환하는 함수
 # 입력: 1) Excel 워크북, 2) 사용자 정보가 담긴 List
@@ -152,21 +149,7 @@ def issueDoc(wb_data, wb_log, doc, histories, timestamp, userData) -> bool:
         print(e)
         return False
 
-# if __name__ == "__main__":
-#     ### 파일 불러오기
-#     wb_data = openpyxl.load_workbook(filename = "./data/data.xlsx")
-#     wb_log = openpyxl.load_workbook(filename = "./data/log.xlsx")
-#     doc = docx.Document("./data/origin.docx")
-
-#     ### 변수 선언
-#     histories = []
-#     date = str()
-#     first_counter = False
-#     timestamp = datetime.now
-#     userData = ["강시운", "20185456", "비꼼"]
-
-#     ### 함수 별 디버깅
-#     print(isUserInDatabase(wb_data, userData))
-#     print(getUserHistories(wb_data, userData))
-#     print(getUserData(userData))
-#     print(issueDoc(wb_data, doc, getUserHistories(wb_data, userData), timestamp, userData))
+if __name__ == "__main__":
+    print(bDayStrStrip("1999-08-13"))
+    print(bDayStrStrip("99-08-13"))
+    print(bDayStrStrip("1999-8-13"))

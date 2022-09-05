@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QStackedWidget, QLabel, QPushButton, QGraphicsDropShadowEffect, QLineEdit, QScrollArea, QDialog, qApp
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QPainter
-from PyQt5.QtCore import Qt, QTime
+from PyQt5.QtCore import Qt, QTime, QTimer
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PIL.ImageQt import ImageQt
 from pdf2image import convert_from_path
@@ -25,9 +25,16 @@ class LoginWidget(QWidget):
         self.initUI()
 
     def clearInputFields(self):
+        global g_histories
+        global g_userData
+
         self.textField1.setText("")
         self.textField2.setText("")
         self.textField3.setText("")
+        self.inputIndicator.clear()
+
+        g_histories.clear()
+        g_userData.clear()
 
     def loginWidgetNavHandler(self):
         global g_histories
@@ -71,7 +78,13 @@ class LoginWidget(QWidget):
             return False
 
         # 유저 정보 업데이트 후 다음 페이지로 진행
-        g_userData = data.getUserData(g_wb_data, g_userData)
+        g_userData = data.getUserData(g_wb_data, g_userData, g_clubs)
+
+        # 6. 생일이 이상하다면:
+        if g_userData[4] == False:
+            self.inputIndicator.setText(now + f"학우님의 활동 이력이 정상 기록되지 않았습니다. 동아리연합회에 직접 발급을 요청하세요.")
+            return False
+
         mainPage.setCurrentIndex(mainPage.currentIndex() + 1)
         reviewWidget.initUI()
         print(g_userData)
@@ -160,9 +173,9 @@ class LoginWidget(QWidget):
         btn.setShortcut("Return")
 
         # 디버그 코드
-        self.textField1.setText("20185456")
-        self.textField2.setText("강시운")
-        self.textField3.setText("비꼼")
+        # self.textField1.setText("20185456")
+        # self.textField2.setText("강시운")
+        # self.textField3.setText("비꼼")
 
         vBox.setAlignment(Qt.AlignCenter)
         vBox.addWidget(titleLabel1)
@@ -198,22 +211,27 @@ class ReviewWidget(QWidget):
         global g_timestamp
         global g_userData
 
+        qApp.processEvents()
         vBox = QVBoxLayout()
 
-        boxTitle1 = QLabel()
-        boxTitle2 = QLabel()
-        boxTitle3 = QLabel()
-        boxTitle1.setText(f"{g_userData[1]} 회원님의")
-        boxTitle2.setText(f"{g_userData[2]} 동아리")
-        boxTitle3.setText("활동 내역이에요.")
-        boxTitle1.setFont(font_boxTitle)
-        boxTitle2.setFont(font_boxTitle)
-        boxTitle3.setFont(font_boxTitle)
-        boxTitle1.setAlignment(Qt.AlignLeft)
-        boxTitle2.setAlignment(Qt.AlignLeft)
-        boxTitle3.setAlignment(Qt.AlignLeft)
-        boxTitle1.setFixedWidth(400)
-        boxTitle1.setStyleSheet("color: #FFB10A;")
+        self.boxTitle1 = QLabel()
+        self.boxTitle2 = QLabel()
+        self.boxTitle3 = QLabel()
+
+        self.boxTitle1.setText(f"{g_userData[1]} 회원님의")
+        self.boxTitle2.setText(f"{g_userData[2]} 동아리")
+        self.boxTitle3.setText("활동 내역이에요.")
+        self.boxTitle1.setFont(font_boxTitle)
+        self.boxTitle2.setFont(font_boxTitle)
+        self.boxTitle3.setFont(font_boxTitle)
+        self.boxTitle1.setAlignment(Qt.AlignLeft)
+        self.boxTitle2.setAlignment(Qt.AlignLeft)
+        self.boxTitle3.setAlignment(Qt.AlignLeft)
+        self.boxTitle1.setFixedWidth(400)
+        self.boxTitle1.setStyleSheet("color: #FFB10A;")
+        self.boxTitle1.repaint()
+        self.boxTitle2.repaint()
+        self.boxTitle3.repaint()
 
         dataLabel = QLabel()
         dataString = str()
@@ -244,9 +262,9 @@ class ReviewWidget(QWidget):
 
         vBox.setAlignment(Qt.AlignCenter)
         vBox.addSpacing(40)
-        vBox.addWidget(boxTitle1)
-        vBox.addWidget(boxTitle2)
-        vBox.addWidget(boxTitle3)
+        vBox.addWidget(self.boxTitle1)
+        vBox.addWidget(self.boxTitle2)
+        vBox.addWidget(self.boxTitle3)
         vBox.addSpacing(20)
         vBox.addWidget(dataArea)
         vBox.addSpacing(20)
@@ -268,6 +286,8 @@ class LoadingWidget(QWidget):
         global g_wb_data
         global g_wb_log
         global g_doc
+        global g_wb_clubs
+        global g_clubs
         global g_fileName
 
         try:
@@ -327,8 +347,7 @@ class EndWidget(QWidget):
         super().__init__()
 
     def endWidgetNavHandler(self):
-        loginWidget.clearInputFields()
-        mainPage.setCurrentIndex(0)
+        sys.exit()
 
     def initUI(self):
         vBox = QVBoxLayout()
@@ -345,12 +364,12 @@ class EndWidget(QWidget):
         boxTitle1.setStyleSheet("color: #FFB10A;")
 
         boxComment = QLabel(self)
-        boxComment.setText("아래 버튼을 눌러\n처음 화면으로 돌아갈 수 있어요.")
+        boxComment.setText("아래 버튼을 눌러\n프로그램을 종료하세요.")
         boxComment.setWordWrap(True)
         boxComment.setAlignment(Qt.AlignCenter)
         boxComment.setFont(font_boxSubtitle)
 
-        btn = QPushButton("처음 화면으로", self)
+        btn = QPushButton("프로그램 종료", self)
         btn.setStyleSheet(
             "border-radius: 15px;"
             "background-color: #E8B602;"
@@ -380,8 +399,7 @@ class ErrorWidget(QWidget):
         super().__init__()
     
     def errorWidgetNavHandler(self):
-        loginWidget.clearInputFields()
-        mainPage.setCurrentIndex(0)
+        sys.exit()
 
     def initUI(self):
         vBox = QVBoxLayout()
@@ -398,12 +416,12 @@ class ErrorWidget(QWidget):
         boxTitle1.setStyleSheet("color: #FFB10A;")
 
         boxComment = QLabel(self)
-        boxComment.setText("아래 버튼을 눌러\n처음부터 다시 시도해주세요.")
+        boxComment.setText("아래 버튼을 눌러\n프로그램을 종료하세요.")
         boxComment.setWordWrap(True)
         boxComment.setAlignment(Qt.AlignCenter)
         boxComment.setFont(font_boxSubtitle)
 
-        btn = QPushButton("처음 화면으로", self)
+        btn = QPushButton("프로그램 종료", self)
         btn.setStyleSheet(
             "border-radius: 15px;"
             "background-color: #E8B602;"
@@ -434,12 +452,14 @@ if __name__ == "__main__":
     global g_wb_data
     global g_wb_log
     global g_doc
+    global g_wb_clubs
 
     try:
         # 데이터 이니셜라이징
-        g_wb_data = openpyxl.load_workbook(filename = "./data/data.xlsx")
-        g_wb_log = openpyxl.load_workbook(filename = "./data/log.xlsx")
+        g_wb_data = openpyxl.load_workbook(filename = "./data/data.xlsx", data_only = True)
+        g_wb_log = openpyxl.load_workbook(filename = "./data/log.xlsx", data_only = True)
         g_doc = docx.Document("./data/origin.docx")
+        g_club_list = openpyxl.load_workbook(filename = "./data/clubs.xlsx", data_only = True)
     except:
         print("failed to load data")
         exit(-1)
@@ -451,12 +471,18 @@ if __name__ == "__main__":
     global g_timestamp
     global g_userData
     global g_fileName
+    global g_clubs
     g_histories = []
     g_date = ""
     g_first_counter = False
     g_timestamp = time.localtime()
     g_userData = []
     g_fileName = ""
+    g_clubs = dict()
+
+    for i in range(2, g_club_list["List"].max_row + 1):
+        g_clubs[g_club_list["List"]["A" + str(i)].value] = g_club_list["List"]["B" + str(i)].value
+
 
     # 폰트 초기화
     fontDb = QFontDatabase()
@@ -497,7 +523,6 @@ if __name__ == "__main__":
     # 백그라운드 페이지 생성
     backgroundPage = QWidget()
     backgroundLayout = QVBoxLayout()
-    backgroundPage.setFixedSize(1920, 1080)
     backgroundLayout.addSpacing(3)
     backgroundLayout.addWidget(mainPage)
     backgroundLayout.addSpacing(3)

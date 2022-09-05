@@ -1,4 +1,6 @@
 # Miscellaneous
+*.exe
+*.zip
 *.class
 *.lock
 *.log
@@ -10,6 +12,7 @@
 .history
 .svn/
 .idea/
+local/data/*
 
 # Security related
 key.txt
