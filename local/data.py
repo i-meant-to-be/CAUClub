@@ -10,12 +10,11 @@ import re
 # 입력: 임의의 생일 텍스트
 # 출력: 패턴이 통일된 생일 텍스트
 def bDayStrStrip(input: str):
-    re1 = re.compile("\d{8}")
-
     # 생일 텍스트 끝에 '-'가 있을 경우 이거 제거
     if input[-1] == "-": input = input[:-1]
+    input = input.replace("00:00:00", "")
     input = input.strip()
-
+    print("# 원본: " + str(input))
     # 1. 생일이 403 (000403), 1103 (001103), 10403 (010403)
     if 3 <= len(input) <= 5:
         temp = "0" * (6 - len(input)) + input
@@ -34,9 +33,14 @@ def bDayStrStrip(input: str):
         if int(year) < 100:
             if 50 < int(year) <= 99: year = "19" + year
             else: year = "20" + year
-    else:
-        return False
-    return f"{year}년 {int(month)}월 {int(day)}일"
+    year = str(year)
+    month = str(month)
+    day = str(day)
+
+    if month[0] == "0": month = month[1:]
+    if day[0] == "0": day = day[1:]
+
+    return f"{str(year)}년 {str(month)}월 {str(day)}일"
 
 # 사용자가 DB에 존재하는지 확인하는 함수
 # 입력: 1) Excel 워크북, 2) 사용자 정보가 담긴 List
@@ -56,11 +60,11 @@ def isUserInDatabase(wb, userName, userId) -> int:
 # 입력: 1) 사용자 이름
 # 반환: 사용자 정보가 담긴 userData 리스트
 # 주석: userData 정의
-#   [0]: 이름 
-#   [1]: 학번
+#   [0]: 학번
+#   [1]: 이름
 #   [2]: 동아리명
-#   [3]: 학과/부
-#   [4]: 생일
+#   [3]: 학부
+#   [4]: 생일 (Revised)
 #   [5]: 매체
 def getUserData(wb, userData, clubs) -> list:
     for worksheet in wb.worksheets:

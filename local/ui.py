@@ -47,7 +47,7 @@ class LoginWidget(QWidget):
         g_userData = [
             self.textField1.text(),
             self.textField2.text(),
-            self.textField3.text(),
+            self.textField3.text()
             ]
 
         # 1. 입력 칸이 모두 채워져 있는지?
@@ -82,8 +82,13 @@ class LoginWidget(QWidget):
 
         # 6. 생일이 이상하다면:
         if g_userData[4] == False:
-            self.inputIndicator.setText(now + f"학우님의 활동 이력이 정상 기록되지 않았습니다. 동아리연합회에 직접 발급을 요청하세요.")
-            return False
+            tbirth_y = self.textField4.text()[:4]
+            tbirth_m = self.textField4.text()[4:6]
+            tbirth_d = self.textField4.text()[6:]
+
+            if tbirth_m[0] == "0": tbirth_m = tbirth_m[1:]          
+            if tbirth_d[0] == "0": tbirth_d = tbirth_d[1:]   
+            g_userData[4] = f"{tbirth_y}년 {tbirth_m}월 {tbirth_d}일"
 
         mainPage.setCurrentIndex(mainPage.currentIndex() + 1)
         reviewWidget.initUI()
@@ -122,6 +127,10 @@ class LoginWidget(QWidget):
         textFieldLabel3.setText("동아리명")
         textFieldLabel3.setFont(font_textLabel)
         textFieldLabel3.setStyleSheet("color: #332D24;")
+        textFieldLabel4 = QLabel(self)
+        textFieldLabel4.setText("생일  (예시:  19990101)")
+        textFieldLabel4.setFont(font_textLabel)
+        textFieldLabel4.setStyleSheet("color: #332D24;")
 
         self.inputIndicator = QLabel()
         self.inputIndicator.setText("")
@@ -152,6 +161,15 @@ class LoginWidget(QWidget):
         self.textField3.setFixedSize(300, 40)
         self.textField3.setFont(font_textValue)
         self.textField3.setStyleSheet(
+            "border-radius: 10px;"
+            "border-style: solid;"
+            "border-width: 1px;"
+            "border-color: #332D24;"
+        )
+        self.textField4 = QLineEdit()
+        self.textField4.setFixedSize(300, 40)
+        self.textField4.setFont(font_textValue)
+        self.textField4.setStyleSheet(
             "border-radius: 10px;"
             "border-style: solid;"
             "border-width: 1px;"
@@ -189,6 +207,9 @@ class LoginWidget(QWidget):
         vBox.addSpacing(20)
         vBox.addWidget(textFieldLabel3)
         vBox.addWidget(self.textField3)
+        vBox.addSpacing(20)
+        vBox.addWidget(textFieldLabel4)
+        vBox.addWidget(self.textField4)
         vBox.addSpacing(20)
         vBox.addWidget(self.inputIndicator)
         vBox.addSpacing(20)
@@ -458,8 +479,8 @@ if __name__ == "__main__":
         # 데이터 이니셜라이징
         g_wb_data = openpyxl.load_workbook(filename = "./data/data.xlsx", data_only = True)
         g_wb_log = openpyxl.load_workbook(filename = "./data/log.xlsx", data_only = True)
-        g_doc = docx.Document("./data/origin.docx")
-        g_club_list = openpyxl.load_workbook(filename = "./data/clubs.xlsx", data_only = True)
+        g_doc = docx.Document("./data/origin_not_stamped.docx")
+        g_wb_clubs = openpyxl.load_workbook(filename = "./data/clubs.xlsx", data_only = True)
     except:
         print("failed to load data")
         exit(-1)
@@ -480,8 +501,8 @@ if __name__ == "__main__":
     g_fileName = ""
     g_clubs = dict()
 
-    for i in range(2, g_club_list["List"].max_row + 1):
-        g_clubs[g_club_list["List"]["A" + str(i)].value] = g_club_list["List"]["B" + str(i)].value
+    for i in range(2, g_wb_clubs["List"].max_row + 1):
+        g_clubs[g_wb_clubs["List"]["A" + str(i)].value] = g_wb_clubs["List"]["B" + str(i)].value
 
 
     # 폰트 초기화
